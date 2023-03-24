@@ -1,0 +1,25 @@
+.Board {
+  max-height: 100%;
+  display: flex;
+  gap: 36px;
+  margin-bottom: 36px;
+}
+
+.Column {
+  display: flex;
+  flex-direction: column;
+}
+
+.ColumnTitle {
+  margin-bottom: 4px;
+  color: var(--gray-500);
+  font-weight: bold;
+  font-size: 15px;
+  text-transform: uppercase;
+}
+
+.Devider {
+  height: 100%;
+  width: 0px;
+  border-right: 1px solid var(--gray-500);
+}
