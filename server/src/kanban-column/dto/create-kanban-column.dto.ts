@@ -1,6 +1,7 @@
 export class CreateKanbanColumnDto {
   name: string;
   kanbanId: string;
+  order: number;
   color?: string;
-  initial?: boolean;
+  isInitial?: boolean;
 }

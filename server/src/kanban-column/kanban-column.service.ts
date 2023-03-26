@@ -30,12 +30,7 @@ export class KanbanColumnService {
     if (!kanban) {
       const kanbanId = createKanbanColumnDto[0].kanbanId;
 
-      let kanban;
-      try {
-        kanban = await this.kanbanService.findOne(kanbanId);
-      } catch (e) {
-        throw e;
-      }
+      let kanban = await this.kanbanService.findOne(kanbanId);
 
       const columns = this.kanbanColumnRepo.create(createKanbanColumnDto);
       return this.kanbanColumnRepo.save(
@@ -66,8 +61,21 @@ export class KanbanColumnService {
     }
   }
 
-  update(id: number, updateKanbanColumnDto: UpdateKanbanColumnDto) {
-    return `This action updates a #${id} kanbanColumn`;
+  async update(id: string, updateKanbanColumnDto: UpdateKanbanColumnDto) {
+    const column = await this.findOne(id);
+
+    const kanban = await this.kanbanService.findOne(column.kanban.id);
+
+    if (
+      updateKanbanColumnDto.order < 0 ||
+      updateKanbanColumnDto.order >= kanban.columns.length
+    ) {
+      throw new HttpException(
+        'Неверный порядок колонки',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const kanbanColumns = kanban.columns;
   }
 
   remove(id: number) {

@@ -48,7 +48,7 @@ export class KanbanColumnController {
     @Param('id') id: string,
     @Body() updateKanbanColumnDto: UpdateKanbanColumnDto,
   ) {
-    return this.kanbanColumnService.update(+id, updateKanbanColumnDto);
+    return this.kanbanColumnService.update(id, updateKanbanColumnDto);
   }
 
   @Delete(':id')

@@ -12,7 +12,10 @@ export class KanbanColumn extends BaseEntity {
   color: string;
 
   @Column({ type: 'boolean', default: false })
-  isInital: boolean;
+  isInitial: boolean;
+
+  @Column({ type: 'int', nullable: false })
+  order: number;
 
   @ManyToOne(() => Kanban, (kanban) => kanban.columns, { nullable: false })
   kanban: Kanban;

@@ -26,30 +26,20 @@ export class TaskService {
   ) {}
 
   async create(createTaskDto: CreateTaskDto) {
-    let kanbanColumn;
-    try {
-      kanbanColumn = await this.kanbanColumnService.findOne(
-        createTaskDto.columnId,
-      );
-    } catch (e) {
-      throw e;
-    }
+    let kanbanColumn = await this.kanbanColumnService.findOne(
+      createTaskDto.columnId,
+    );
 
-    if (!kanbanColumn.isInital) {
+    if (!kanbanColumn.isInitial) {
       throw new HttpException(
         'Колонка не является начальной',
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    let kanban;
-    if (createTaskDto.childKanbanId) {
-      try {
-        kanban = await this.kanbanService.findOne(createTaskDto.childKanbanId);
-      } catch (e) {
-        throw e;
-      }
-    }
+    let kanban = createTaskDto.childKanbanId
+      ? await this.kanbanService.findOne(createTaskDto.childKanbanId)
+      : null;
 
     const newTask = this.taskRepo.create(createTaskDto);
     if (kanban) {
@@ -81,14 +71,11 @@ export class TaskService {
   }
 
   async update(id: string, updateTaskDto: UpdateTaskDto) {
-    let task;
-    let column;
-    try {
-      task = await this.findOne(id);
-      column = await this.kanbanColumnService.findOne(updateTaskDto.columnId);
-    } catch (e) {
-      throw e;
-    }
+    const promise = Promise.all([
+      this.findOne(id),
+      this.kanbanColumnService.findOne(updateTaskDto.columnId),
+    ]);
+    let [task, column] = await promise;
 
     return await this.taskRepo.save({ ...task, column });
   }

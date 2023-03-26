@@ -35,22 +35,23 @@ export class KanbanService {
 
     const createdKanban = await this.kanbanRepo.save(kanban);
 
-    console.log(createdKanban);
-
     await this.kanbanColumnService.create(
       [
         {
           kanbanId: createdKanban.id,
           name: 'В ожидании',
-          initial: true,
+          isInitial: true,
+          order: 1,
         },
         {
           kanbanId: createdKanban.id,
           name: 'В работе',
+          order: 2,
         },
         {
           kanbanId: createdKanban.id,
           name: 'В завершении',
+          order: 3,
         },
       ],
       createdKanban,
@@ -73,6 +74,8 @@ export class KanbanService {
       if (!kanban) {
         throw new HttpException('Канбан не найден', HttpStatus.NOT_FOUND);
       }
+
+      kanban.columns = kanban.columns.sort((c1, c2) => c1.order - c2.order);
 
       return kanban;
     } catch (e) {
