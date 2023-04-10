@@ -49,7 +49,10 @@ export class KanbanColumnService {
 
   async findOne(id: string) {
     try {
-      const column = await this.kanbanColumnRepo.findOne({ where: { id } });
+      const column = await this.kanbanColumnRepo.findOne({
+        where: { id },
+        relations: { kanban: true },
+      });
 
       if (!column) {
         throw new HttpException('Колонка не найдена', HttpStatus.NOT_FOUND);
@@ -67,15 +70,31 @@ export class KanbanColumnService {
     const kanban = await this.kanbanService.findOne(column.kanban.id);
 
     if (
-      updateKanbanColumnDto.order < 0 ||
-      updateKanbanColumnDto.order >= kanban.columns.length
+      updateKanbanColumnDto.order <= 0 ||
+      updateKanbanColumnDto.order > kanban.columns.length
     ) {
       throw new HttpException(
-        'Неверный порядок колонки',
+        `Неверный порядок колонки, задавайте от 1 до ${kanban.columns.length}`,
         HttpStatus.BAD_REQUEST,
       );
     }
+
     const kanbanColumns = kanban.columns;
+
+    if (updateKanbanColumnDto.order) {
+      kanbanColumns.splice(column.order - 1, 1);
+      kanbanColumns.splice(updateKanbanColumnDto.order - 1, 0, column);
+      console.log(kanbanColumns);
+      return await this.kanbanColumnRepo.save(
+        kanbanColumns.map((column, index) => ({
+          ...column,
+          order: index + 1,
+          isInitial: index === 0,
+        })),
+      );
+    }
+
+    return await this.kanbanColumnRepo.update(id, updateKanbanColumnDto);
   }
 
   remove(id: number) {

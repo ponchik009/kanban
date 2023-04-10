@@ -1,0 +1,14 @@
+.Wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  /* opacity: ${({ isDropDisabled }) => (isDropDisabled ? 0.5 : "inherit")}; */
+  padding: 8px;
+  /* border: ${grid}px; */
+  transition: background-color 0.2s ease, opacity 0.1s ease;
+  user-select: none;
+  width: 100%;
+  overflow-y: auto;
+  height: 90vh !important;
+}
