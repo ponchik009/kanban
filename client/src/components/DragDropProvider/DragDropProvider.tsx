@@ -1,8 +1,7 @@
 import React, { ReactNode, createContext, useContext, useState } from "react";
 import { DraggableLocation, DropResult } from "react-beautiful-dnd";
-import { v4 } from "uuid";
 
-import { ColumnType } from "@/types";
+import { ColumnWithTasksType } from "@/types";
 
 type DragDropProps = (
   source: DraggableLocation,
@@ -27,18 +26,13 @@ type RowDropshadow = { marginTop: number; height: number };
 type ColDropshadow = { marginLeft: number; height: number };
 
 type DragDropContextProps = {
-  onSubmit: (newRow: string, colIndex: number) => void;
-  handleDuplicateTask: (rowIndex: number, colIndex: number) => void;
-  handleNewColumn: (newName: string) => void;
-  handleRemoveTask: (rowIndex: number, colIndex: number) => void;
-  handleDeleteColumn: (colIndex: number) => void;
   handleDragEnd: (result: DropResult) => void;
   handleDragStart: (event: any) => void;
   handleDragUpdate: (event: any) => void;
   rowDropshadowProps: RowDropshadow;
   colDropshadowProps: ColDropshadow;
-  columns: ColumnType[];
-  setColumns: React.Dispatch<React.SetStateAction<ColumnType[]>>;
+  columns: ColumnWithTasksType[];
+  setColumns: React.Dispatch<React.SetStateAction<ColumnWithTasksType[]>>;
 };
 
 const DragDropContext = createContext<DragDropContextProps | undefined>(
@@ -90,10 +84,10 @@ const getStyle = (
   }, 0);
 
 const DragDropProvider: React.FC<{
-  data: ColumnType[];
+  data: ColumnWithTasksType[];
   children: ReactNode;
 }> = ({ children, data }) => {
-  const [columns, setColumns] = useState<ColumnType[]>(data);
+  const [columns, setColumns] = useState<ColumnWithTasksType[]>(data);
   const [colDropshadowProps, setColDropshadowProps] = useState<ColDropshadow>({
     marginLeft: 0,
     height: 0,
@@ -284,55 +278,9 @@ const DragDropProvider: React.FC<{
       return updated;
     });
 
-  const onSubmit = (newRow: string, colIndex: number) => {
-    setColumns((prev) => {
-      const updated = [...prev];
-      updated[colIndex].tasks.push({ content: newRow, id: v4() });
-      return updated;
-    });
-  };
-
-  const handleRemoveTask = (rowIndex: number, colIndex: number) => {
-    setColumns((prev) => {
-      const updated = [...prev];
-      updated[colIndex].tasks.splice(rowIndex, 1);
-      return updated;
-    });
-  };
-
-  const handleDuplicateTask = (rowIndex: number, colIndex: number) => {
-    setColumns((prev) => {
-      const updated = [...prev];
-      updated[colIndex].tasks.push({
-        content: updated[colIndex].tasks[rowIndex].content,
-        id: v4(),
-      });
-      return updated;
-    });
-  };
-
-  const handleNewColumn = (newName: string) => {
-    setColumns((prev) => {
-      const updated = [...prev];
-      return [
-        ...updated,
-        {
-          id: v4(),
-          title: newName,
-          tasks: [],
-        },
-      ];
-    });
-  };
-
   return (
     <DragDropContext.Provider
       value={{
-        onSubmit,
-        handleDuplicateTask,
-        handleNewColumn,
-        handleRemoveTask,
-        handleDeleteColumn,
         handleDragEnd,
         handleDragStart,
         handleDragUpdate,

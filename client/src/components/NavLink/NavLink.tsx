@@ -9,6 +9,7 @@ interface NavLinkProps {
   leftIcon?: ReactElement;
   rightIcon?: ReactElement;
   size?: number;
+  active?: boolean;
 }
 
 export const NavLink: React.FC<NavLinkProps> = ({
@@ -17,10 +18,11 @@ export const NavLink: React.FC<NavLinkProps> = ({
   leftIcon,
   rightIcon,
   size = 3,
+  active = false,
 }) => {
   return (
     <Link href={to}>
-      <LinkContainer fontSize={size}>
+      <LinkContainer fontSize={size} active={active}>
         {leftIcon}
         {text}
         {rightIcon}

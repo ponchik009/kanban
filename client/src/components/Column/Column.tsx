@@ -19,10 +19,10 @@ import { useDragDrop } from "@/components";
 import { Row } from "@/components";
 import { StrictModeDroppable as Droppable } from "@/components";
 
-import { ColumnType } from "@/types";
+import { ColumnWithTasksType } from "@/types";
 
 type Props = {
-  column: ColumnType;
+  column: ColumnWithTasksType;
   columnIndex: number;
 };
 
@@ -34,7 +34,7 @@ const Column: React.FC<Props> = ({ column, columnIndex }) => {
       {(provided: DraggableProvided) => (
         <Container {...provided.draggableProps} ref={provided.innerRef}>
           <TitleContainer>
-            <Title {...provided.dragHandleProps}>{column.title}</Title>
+            <Title {...provided.dragHandleProps}>{column.name}</Title>
           </TitleContainer>
 
           <Droppable droppableId={column.id} type="task">

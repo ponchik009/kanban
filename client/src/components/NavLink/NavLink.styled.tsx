@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 interface LinkContainerProps {
   fontSize?: number;
+  active?: boolean;
 }
 
 export const LinkContainer = styled.li<LinkContainerProps>`
@@ -13,9 +14,8 @@ export const LinkContainer = styled.li<LinkContainerProps>`
   gap: 8px;
 
   border-radius: 8px;
-  padding: 12px;
-
-  background: #f2f4f7;
+  padding: 24px;
+  background: ${({ active = false }) => (active ? "#f2f4f7" : "inherit")};
 
   & svg {
     width: ${({ fontSize }) => ((fontSize || 2) + 1) * DEFAULT_FONT_SIZE}px;

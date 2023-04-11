@@ -1,14 +1,30 @@
 export type TaskType = {
   id: string;
-  content: string;
+  name: string;
+  desctiption: string;
+  chilKanban: KanbanType | null;
+  column: ColumnType;
 };
 
 export type ColumnType = {
   id: string;
-  title: string;
+  name: string;
+  color: string;
+  order: number;
+  isInitial: boolean;
+};
+
+export type ColumnWithTasksType = ColumnType & {
   tasks: TaskType[];
 };
 
-export type TaskBoardType = {
-  columns: ColumnType[];
+export type KanbanType = {
+  id: string;
+  name: string;
+  avatar: string;
+  parentTask: TaskType;
+};
+
+export type KanbanWithColumnsType = KanbanType & {
+  columns: ColumnWithTasksType[];
 };

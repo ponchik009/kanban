@@ -17,7 +17,14 @@ export const Container = styled.aside`
 
 export const SideMenuTitle = styled.h3`
   padding: 8px;
+  padding-left: 24px;
   font-size: 32px;
   font-weight: 500;
   text-transform: uppercase;
+`;
+
+export const LinksContainer = styled.ul`
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 `;

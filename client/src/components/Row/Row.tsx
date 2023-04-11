@@ -29,7 +29,7 @@ const Row: React.FC<Props> = ({ task, index }) => {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          {task.content}
+          {task.name}
         </Container>
       )}
     </Draggable>
