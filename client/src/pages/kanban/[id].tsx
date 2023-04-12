@@ -1,10 +1,13 @@
+import React from "react";
 import { GetServerSideProps, GetStaticPaths, GetStaticProps } from "next";
+import Head from "next/head";
+import axios from "axios";
 
-import { KanbanApi } from "@/api";
 import { Board, DragDropProvider } from "@/components";
 import { KanbanWithColumnsType } from "@/types";
-import axios from "axios";
-import Head from "next/head";
+import { KanbanApi } from "@/api";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { setKanban } from "@/store";
 
 interface KanbanIndexProps {
   data: KanbanWithColumnsType;
@@ -12,6 +15,12 @@ interface KanbanIndexProps {
 }
 
 const index = ({ data, id }: KanbanIndexProps) => {
+  const dispatch = useAppDispatch();
+
+  React.useEffect(() => {
+    dispatch(setKanban(data));
+  }, []);
+
   return (
     <>
       <Head>

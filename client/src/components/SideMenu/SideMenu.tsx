@@ -5,53 +5,39 @@ import { SideMenuTitle, Container, LinksContainer } from "./SideMenu.styled";
 import { NavLink } from "@/components";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { LinkType } from "@/types";
 
-export const SideMenu = () => {
+interface SideMenuProps {
+  links: LinkType[];
+  menuTitle?: string;
+}
+
+export const SideMenu: React.FC<SideMenuProps> = ({
+  links,
+  menuTitle = "Менюшка",
+}) => {
   const router = useRouter();
 
   return (
     <Container>
-      <SideMenuTitle>Менюшка</SideMenuTitle>
+      <SideMenuTitle>{menuTitle}</SideMenuTitle>
       <LinksContainer>
-        <NavLink
-          text="Задачи"
-          to="/kanban"
-          leftIcon={
-            <Image
-              alt="Список задач проекта"
-              src="/assets/IconTask.svg"
-              width={32}
-              height={32}
-            />
-          }
-          active={router.asPath === "/kanban"}
-        />
-        <NavLink
-          text="Аналитика"
-          to="/analytics"
-          leftIcon={
-            <Image
-              alt="Аналитика по проекту"
-              src="/assets/IconAnalytics.svg"
-              width={32}
-              height={32}
-            />
-          }
-          active={router.asPath === "/analytics"}
-        />
-        <NavLink
-          text="Участники"
-          to="/participants"
-          leftIcon={
-            <Image
-              alt="Участники проекта"
-              src="/assets/IconPerson.svg"
-              width={32}
-              height={32}
-            />
-          }
-          active={router.asPath === "/participants"}
-        />
+        {links.map((link) => (
+          <NavLink
+            text={link.name}
+            to={link.link}
+            active={router.asPath === link.link}
+            leftIcon={
+              <Image
+                alt={link.description}
+                src={link.iconPath}
+                width={32}
+                height={32}
+              />
+            }
+            key={link.name}
+          />
+        ))}
       </LinksContainer>
     </Container>
   );

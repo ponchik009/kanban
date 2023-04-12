@@ -29,5 +29,6 @@ export const LinkContainer = styled.li<LinkContainerProps>`
 
   &:hover {
     background: #e1e1e1;
+    box-shadow: 8px 8px 8px #a1a1a1;
   }
 `;

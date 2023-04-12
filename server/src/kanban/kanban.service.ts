@@ -61,14 +61,14 @@ export class KanbanService {
   }
 
   findAll() {
-    return this.kanbanRepo.find();
+    return this.kanbanRepo.find({ relations: { parentTask: true } });
   }
 
   async findOne(id: string) {
     try {
       const kanban = await this.kanbanRepo.findOne({
         where: { id },
-        relations: { columns: { tasks: true } },
+        relations: { columns: { tasks: true }, parentTask: true },
       });
 
       if (!kanban) {

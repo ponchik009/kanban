@@ -1,1 +1,2 @@
-export * from "./ConstStyles";
+export * from "./Styles";
+export * from "./Links";

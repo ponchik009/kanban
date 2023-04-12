@@ -8,7 +8,7 @@ export class Kanban extends BaseEntity {
   @Column({ type: 'varchar', length: 50 })
   name: string;
 
-  @Column({ type: 'varchar', length: 300, default: 'img/default.png' })
+  @Column({ type: 'varchar', length: 300, default: 'img/default.jpg' })
   avatar: string;
 
   @OneToMany(() => KanbanColumn, (kanbanColumn) => kanbanColumn.kanban)
