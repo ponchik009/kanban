@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { AppState, AppThunk } from "@/store";
 import { KanbanType, KanbanWithColumnsType, LoadingType } from "@/types";
 import axios from "axios";
+import { KanbanApi } from "@/api";
 
 export interface KanbanListState {
   kanbanList: KanbanType[] | null;
@@ -17,10 +18,7 @@ const initialState: KanbanListState = {
 export const fetchKanbanList = createAsyncThunk(
   "KanbanList/fetchKanbanList",
   async () => {
-    const data = (await axios.get<KanbanType[]>(`http://localhost:8080/kanban`))
-      .data;
-
-    return data;
+    return KanbanApi.getKanbanList();
   }
 );
 

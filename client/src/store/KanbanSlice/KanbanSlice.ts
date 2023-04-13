@@ -4,6 +4,7 @@ import type { AppState, AppThunk } from "@/store";
 import { KanbanWithColumnsType, LoadingType } from "@/types";
 import axios from "axios";
 import { DraggableLocation } from "react-beautiful-dnd";
+import { KanbanApi } from "@/api";
 
 export interface KanbanState {
   kanban: KanbanWithColumnsType | null;
@@ -18,13 +19,7 @@ const initialState: KanbanState = {
 export const fetchKanban = createAsyncThunk(
   "Kanban/fetchKanban",
   async (id: string) => {
-    const data = (
-      await axios.get<KanbanWithColumnsType>(
-        `http://localhost:8080/kanban/${id}`
-      )
-    ).data;
-
-    return data;
+    return KanbanApi.getKanbanBoard(id);
   }
 );
 

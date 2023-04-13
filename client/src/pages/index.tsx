@@ -12,6 +12,7 @@ import { useAppDispatch } from "@/hooks";
 import { setKanban } from "@/store";
 import React from "react";
 import { setKanbanList } from "@/store/KanbanListSlice";
+import { KanbanApi } from "@/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,8 +38,7 @@ export default function Home({ data }: { data: KanbanType[] }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const data = (await axios.get<KanbanType[]>(`http://localhost:8080/kanban`))
-    .data;
+  const data = await KanbanApi.getKanbanList();
 
   return {
     props: {

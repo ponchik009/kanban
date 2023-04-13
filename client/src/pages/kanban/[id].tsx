@@ -48,9 +48,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  const data = (
-    await axios.get<KanbanWithColumnsType>(`http://localhost:8080/kanban/${id}`)
-  ).data;
+  const data = await KanbanApi.getKanbanBoard(id);
 
   return {
     props: {
