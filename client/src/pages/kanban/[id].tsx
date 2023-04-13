@@ -1,12 +1,11 @@
-import React from "react";
-import { GetServerSideProps, GetStaticPaths, GetStaticProps } from "next";
+import React, { useState } from "react";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
-import axios from "axios";
 
-import { Board, DragDropProvider } from "@/components";
+import { Board, DragDropProvider, Modal } from "@/components";
 import { KanbanWithColumnsType } from "@/types";
 import { KanbanApi } from "@/api";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import { useAppDispatch } from "@/hooks";
 import { setKanban } from "@/store";
 
 interface KanbanIndexProps {
@@ -21,6 +20,11 @@ const index = ({ data, id }: KanbanIndexProps) => {
     dispatch(setKanban(data));
   }, []);
 
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const onModalOpenClick = () => setModalOpen(true);
+  const onModalCloseClick = () => setModalOpen(false);
+
   return (
     <>
       <Head>
@@ -32,9 +36,13 @@ const index = ({ data, id }: KanbanIndexProps) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <button onClick={onModalOpenClick}>Открыть модалку</button>
       <DragDropProvider>
         <Board />
       </DragDropProvider>
+      <Modal title="МОДАЛКА" onClose={onModalCloseClick} open={modalOpen}>
+        123
+      </Modal>
     </>
   );
 };

@@ -1,17 +1,15 @@
+import React from "react";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "next/font/google";
-import axios from "axios";
 
 import styles from "@/styles/Home.module.css";
 
 import { KanbanType } from "@/types";
-import { KanbanList } from "@/components/KanbanList";
+import { KanbanList } from "@/components";
 import { useAppDispatch } from "@/hooks";
 import { setKanban } from "@/store";
-import React from "react";
-import { setKanbanList } from "@/store/KanbanListSlice";
+import { setKanbanList } from "@/store";
 import { KanbanApi } from "@/api";
 
 const inter = Inter({ subsets: ["latin"] });

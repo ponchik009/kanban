@@ -5,3 +5,6 @@ export * from "./Row";
 export * from "./StrictModeDroppable";
 export * from "./SideMenu";
 export * from "./NavLink";
+export * from "./Modal";
+export * from "./KanbanCard";
+export * from "./KanbanList";

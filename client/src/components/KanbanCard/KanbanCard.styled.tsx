@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styled from "styled-components";
 
-export const Container = styled(Link)`
+export const KanbanCardContainer = styled(Link)`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -21,13 +21,13 @@ export const Container = styled(Link)`
   }
 `;
 
-export const ImageContainer = styled.img`
+export const KanbanImageContainer = styled.img`
   width: 128px;
   height: 128px;
   border-radius: 100%;
 `;
 
-export const NameContainer = styled.span`
+export const KanbanNameContainer = styled.span`
   font-size: 32px;
   font-weight: 400;
   /* color: #858585; */

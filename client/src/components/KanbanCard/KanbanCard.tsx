@@ -1,6 +1,10 @@
 import { KanbanType } from "@/types";
 import React from "react";
-import { Container, ImageContainer, NameContainer } from "./KanbanCard.styled";
+import {
+  KanbanCardContainer,
+  KanbanImageContainer,
+  KanbanNameContainer,
+} from "./KanbanCard.styled";
 
 interface KanbanCardProps {
   kanban: KanbanType;
@@ -9,14 +13,14 @@ interface KanbanCardProps {
 export const KanbanCard: React.FC<KanbanCardProps> = ({ kanban }) => {
   return (
     <li>
-      <Container href={`/kanban/${kanban.id}`}>
-        <ImageContainer
+      <KanbanCardContainer href={`/kanban/${kanban.id}`}>
+        <KanbanImageContainer
           src={`http://localhost:8080/${kanban.avatar}`}
           alt={kanban.name}
           key={kanban.id}
         />
-        <NameContainer>{kanban.name}</NameContainer>
-      </Container>
+        <KanbanNameContainer>{kanban.name}</KanbanNameContainer>
+      </KanbanCardContainer>
     </li>
   );
 };
