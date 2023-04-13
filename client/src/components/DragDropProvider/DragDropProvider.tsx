@@ -2,6 +2,8 @@ import React, { ReactNode, createContext, useContext, useState } from "react";
 import { DraggableLocation, DropResult } from "react-beautiful-dnd";
 
 import { ColumnWithTasksType } from "@/types";
+import { useAppDispatch } from "@/hooks";
+import { moveColumn, moveToDifferentColumn, moveToSameColumn } from "@/store";
 
 type DragDropProps = (
   source: DraggableLocation,
@@ -31,8 +33,6 @@ type DragDropContextProps = {
   handleDragUpdate: (event: any) => void;
   rowDropshadowProps: RowDropshadow;
   colDropshadowProps: ColDropshadow;
-  columns: ColumnWithTasksType[];
-  setColumns: React.Dispatch<React.SetStateAction<ColumnWithTasksType[]>>;
 };
 
 const DragDropContext = createContext<DragDropContextProps | undefined>(
@@ -84,10 +84,10 @@ const getStyle = (
   }, 0);
 
 const DragDropProvider: React.FC<{
-  data: ColumnWithTasksType[];
   children: ReactNode;
-}> = ({ children, data }) => {
-  const [columns, setColumns] = useState<ColumnWithTasksType[]>(data);
+}> = ({ children }) => {
+  const dispatch = useAppDispatch();
+
   const [colDropshadowProps, setColDropshadowProps] = useState<ColDropshadow>({
     marginLeft: 0,
     height: 0,
@@ -100,43 +100,13 @@ const DragDropProvider: React.FC<{
   // handling movement of row in the same column
   // [[],[]],[]
   const moveRowSameColumn: DragDropProps = (source, destination) => {
-    // moving tasks in same column
-    setColumns((prev) => {
-      const updated = [...prev];
-      // isolate the row of the column we want to adjust
-      const [{ tasks }] = updated.filter(({ id }) => id === source.droppableId);
-      // remove the source item
-      const [removed] = tasks.splice(source.index, 1);
-      // insert the source item at the new colIndex
-      tasks.splice(destination.index, 0, removed);
-      return updated;
-    });
+    dispatch(moveToSameColumn({ source, destination }));
   };
 
   // handling movement of row between columns
   const moveRowDifferentColumn: DragDropProps = (source, destination) => {
     // moving tasks between columns
-    setColumns((prev) => {
-      // filter out which column is the source and which is the destination
-      const updated = [...prev];
-      const [sourceColumn] = updated.filter(
-        ({ id }) => id === source.droppableId
-      );
-      const [destinationColumn] = updated.filter(
-        ({ id }) => id === destination.droppableId
-      );
-
-      // extract the tasks from the columnn
-      const sourceRow = sourceColumn.tasks;
-      const destinationRow = destinationColumn.tasks;
-
-      // remove the source item
-      const [removed] = sourceRow.splice(source.index, 1);
-      // insert the source item at the new colIndex
-      destinationRow.splice(destination.index, 0, removed);
-
-      return updated;
-    });
+    dispatch(moveToDifferentColumn({ source, destination }));
   };
 
   // determining if its diff col or same col for row movement
@@ -157,14 +127,7 @@ const DragDropProvider: React.FC<{
   const handleColumnMove: DragDropProps = (source, destination) =>
     // rememeber that source and dest are just { draggableId, index }
     // moving columns (:
-    setColumns((prev) => {
-      const updated = [...prev];
-      // remove source column
-      const [removed] = updated.splice(source.index, 1);
-      // insert source column at new destination
-      updated.splice(destination.index, 0, removed);
-      return updated;
-    });
+    dispatch(moveColumn({ source, destination }));
 
   const handleDropshadowRow: RowDropshadowProps = (
     event,
@@ -271,13 +234,6 @@ const DragDropProvider: React.FC<{
     }
   };
 
-  const handleDeleteColumn = (colIndex: number) =>
-    setColumns((prev) => {
-      const updated = [...prev];
-      updated.filter((dat, rowIndex) => rowIndex !== colIndex);
-      return updated;
-    });
-
   return (
     <DragDropContext.Provider
       value={{
@@ -286,8 +242,6 @@ const DragDropProvider: React.FC<{
         handleDragUpdate,
         rowDropshadowProps,
         colDropshadowProps,
-        columns,
-        setColumns,
       }}
     >
       {children}

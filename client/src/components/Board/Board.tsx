@@ -6,6 +6,8 @@ import { ColumnDropshadow, Container } from "./Board.styled";
 import { useDragDrop } from "@/components";
 import { Column } from "@/components";
 import { StrictModeDroppable as Droppable } from "@/components";
+import { useAppSelector } from "@/hooks";
+import { selectKanbanColumns } from "@/store";
 
 const Board: React.FC = () => {
   const {
@@ -13,8 +15,9 @@ const Board: React.FC = () => {
     handleDragStart,
     handleDragUpdate,
     colDropshadowProps,
-    columns,
   } = useDragDrop();
+
+  const columns = useAppSelector(selectKanbanColumns);
 
   return (
     <DragDropContext
@@ -29,13 +32,14 @@ const Board: React.FC = () => {
             {...provided.droppableProps}
             ref={provided.innerRef}
           >
-            {columns.map((column, columnIndex) => (
-              <Column
-                key={column.id}
-                column={column}
-                columnIndex={columnIndex}
-              />
-            ))}
+            {columns &&
+              columns.map((column, columnIndex) => (
+                <Column
+                  key={column.id}
+                  column={column}
+                  columnIndex={columnIndex}
+                />
+              ))}
             {provided.placeholder}
             {snapshot.isDraggingOver && (
               <ColumnDropshadow
