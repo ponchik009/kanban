@@ -12,7 +12,7 @@ export const Container = styled.div`
   overflow: hidden;
   white-space: nowrap;
   box-sizing: border-box;
-  padding: 10px 20px;
+  /* padding: 10px 20px; */
 `;
 
 type DropshadowProps = {

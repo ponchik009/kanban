@@ -4,4 +4,5 @@ export const Container = styled.ul`
   display: flex;
   gap: 24px;
   flex-wrap: wrap;
+  list-style: none;
 `;
