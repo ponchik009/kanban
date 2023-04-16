@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 
-import { Board, DragDropProvider, Modal } from "@/components";
+import { Board, DragDropProvider, Modal, Preloader } from "@/components";
 import { KanbanWithColumnsType } from "@/types";
 import { KanbanApi } from "@/api";
-import { useAppDispatch } from "@/hooks";
-import { setKanban } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { selectKanban, selectKanbanLoadingStatus, setKanban } from "@/store";
+import { usePreloader } from "@/hooks/UsePreloader";
 
 interface KanbanIndexProps {
   data: KanbanWithColumnsType;
@@ -25,6 +26,10 @@ const index = ({ data, id }: KanbanIndexProps) => {
   const onModalOpenClick = () => setModalOpen(true);
   const onModalCloseClick = () => setModalOpen(false);
 
+  const status = useAppSelector(selectKanbanLoadingStatus);
+  const isLoading = status === "loading";
+  const { isPreloaderShow } = usePreloader(isLoading, 400);
+
   return (
     <>
       <Head>
@@ -37,9 +42,13 @@ const index = ({ data, id }: KanbanIndexProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <button onClick={onModalOpenClick}>Открыть модалку</button>
-      <DragDropProvider>
-        <Board />
-      </DragDropProvider>
+      {isPreloaderShow ? (
+        <Preloader />
+      ) : (
+        <DragDropProvider>
+          <Board />
+        </DragDropProvider>
+      )}
       <Modal title="МОДАЛКА" onClose={onModalCloseClick} open={modalOpen}>
         123
       </Modal>

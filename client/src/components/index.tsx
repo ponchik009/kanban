@@ -8,3 +8,4 @@ export * from "./NavLink";
 export * from "./Modal";
 export * from "./KanbanCard";
 export * from "./KanbanList";
+export * from "./Preloader";

@@ -148,6 +148,8 @@ export const {
   moveColumn,
 } = kanbanSlice.actions;
 
+export const selectKanbanLoadingStatus = (state: AppState) =>
+  state.Kanban.status;
 export const selectKanban = (state: AppState) => state.Kanban.kanban;
 export const selectKanbanColumns = (state: AppState) =>
   state.Kanban.kanban?.columns;
