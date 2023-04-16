@@ -1,9 +1,8 @@
 import React, { ReactNode, createContext, useContext, useState } from "react";
 import { DraggableLocation, DropResult } from "react-beautiful-dnd";
 
-import { ColumnWithTasksType } from "@/types";
 import { useAppDispatch } from "@/hooks";
-import { moveColumn, moveToDifferentColumn, moveToSameColumn } from "@/store";
+import { moveColumn, moveToSameColumn, updateTaskStatus } from "@/store";
 
 type DragDropProps = (
   source: DraggableLocation,
@@ -106,7 +105,9 @@ const DragDropProvider: React.FC<{
   // handling movement of row between columns
   const moveRowDifferentColumn: DragDropProps = (source, destination) => {
     // moving tasks between columns
-    dispatch(moveToDifferentColumn({ source, destination }));
+    dispatch(updateTaskStatus({ source, destination }))
+      .unwrap()
+      .catch(console.log);
   };
 
   // determining if its diff col or same col for row movement

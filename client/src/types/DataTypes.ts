@@ -3,6 +3,13 @@ export type TaskType = {
   name: string;
   desctiption: string;
   chilKanban: KanbanType | null;
+};
+
+export type TaskTypeWithColumn = {
+  id: string;
+  name: string;
+  desctiption: string;
+  chilKanban: KanbanType | null;
   column: ColumnType;
 };
 

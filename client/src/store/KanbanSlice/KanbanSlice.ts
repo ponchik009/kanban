@@ -1,10 +1,15 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-import type { AppState, AppThunk } from "@/store";
-import { KanbanWithColumnsType, LoadingType } from "@/types";
-import axios from "axios";
+import {
+  createAsyncThunk,
+  createSlice,
+  current,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import { DraggableLocation } from "react-beautiful-dnd";
+
+import type { AppState } from "@/store";
+import { KanbanWithColumnsType, LoadingType, UpdateTaskDto } from "@/types";
 import { KanbanApi } from "@/api";
+import { TaskApi } from "@/api/taskApi";
 
 export interface KanbanState {
   kanban: KanbanWithColumnsType | null;
@@ -20,6 +25,45 @@ export const fetchKanban = createAsyncThunk(
   "Kanban/fetchKanban",
   async (id: string) => {
     return KanbanApi.getKanbanBoard(id);
+  }
+);
+
+export const updateTaskStatus = createAsyncThunk(
+  "Kanban/updateTaskStatus",
+  async (
+    data: {
+      source: DraggableLocation;
+      destination: DraggableLocation;
+    },
+    { getState, dispatch }
+  ) => {
+    const { source, destination } = data;
+    const state = (getState() as AppState).Kanban;
+
+    const kanban = state.kanban;
+    // moving tasks in same column
+    const updated = [...kanban!.columns];
+    const sourceColumnIndex = updated.findIndex(
+      ({ id }) => id === source.droppableId
+    );
+    const [destinationColumn] = updated.filter(
+      ({ id }) => id === destination.droppableId
+    );
+
+    const taskId = updated[sourceColumnIndex].tasks[source.index].id;
+
+    const sourceColumnWithFilteredTasks = {
+      ...updated[sourceColumnIndex],
+      tasks: updated[sourceColumnIndex].tasks.filter(
+        (t, i) => i !== source.index
+      ),
+    };
+    updated.splice(sourceColumnIndex, 1, sourceColumnWithFilteredTasks);
+    dispatch(setKanban({ ...state.kanban!, columns: updated }));
+
+    return TaskApi.moveTask(taskId, {
+      columnId: destinationColumn.id,
+    });
   }
 );
 
@@ -51,35 +95,6 @@ export const kanbanSlice = createSlice({
 
       state.kanban!.columns = updated;
     },
-    moveToDifferentColumn: (
-      state,
-      action: PayloadAction<{
-        source: DraggableLocation;
-        destination: DraggableLocation;
-      }>
-    ) => {
-      const { source, destination } = action.payload;
-      const kanban = state.kanban;
-      // moving tasks in same column
-      const updated = [...kanban!.columns];
-      const [sourceColumn] = updated.filter(
-        ({ id }) => id === source.droppableId
-      );
-      const [destinationColumn] = updated.filter(
-        ({ id }) => id === destination.droppableId
-      );
-
-      // extract the tasks from the columnn
-      const sourceRow = sourceColumn.tasks;
-      const destinationRow = destinationColumn.tasks;
-
-      // remove the source item
-      const [removed] = sourceRow.splice(source.index, 1);
-      // insert the source item at the new colIndex
-      destinationRow.splice(destination.index, 0, removed);
-
-      state.kanban!.columns = updated;
-    },
     moveColumn: (
       state,
       action: PayloadAction<{
@@ -107,6 +122,21 @@ export const kanbanSlice = createSlice({
       .addCase(fetchKanban.fulfilled, (state, action) => {
         state.status = "idle";
         state.kanban = action.payload;
+      })
+      .addCase(updateTaskStatus.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(updateTaskStatus.fulfilled, (state, action) => {
+        state.status = "idle";
+
+        const { destination } = action.meta.arg;
+
+        const [destinationColumn] = state.kanban!.columns.filter(
+          ({ id }) => id === destination.droppableId
+        );
+
+        // insert the source item at the new colIndex
+        destinationColumn.tasks.splice(destination.index, 0, action.payload);
       });
   },
 });
@@ -114,7 +144,7 @@ export const kanbanSlice = createSlice({
 export const {
   setKanban,
   moveToSameColumn,
-  moveToDifferentColumn,
+
   moveColumn,
 } = kanbanSlice.actions;
 
