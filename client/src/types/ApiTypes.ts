@@ -4,3 +4,10 @@ export type UpdateTaskDto = {
   columnId: string;
   childKanbanId?: string;
 };
+
+export type UpdateColumnDto = {
+  name?: string;
+  order?: number;
+  color?: string;
+  isInitial?: boolean;
+};

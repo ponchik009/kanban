@@ -51,7 +51,7 @@ export class KanbanColumnService {
     try {
       const column = await this.kanbanColumnRepo.findOne({
         where: { id },
-        relations: { kanban: true },
+        relations: { kanban: true, tasks: true },
       });
 
       if (!column) {

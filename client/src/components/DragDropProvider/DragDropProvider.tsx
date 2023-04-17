@@ -2,7 +2,7 @@ import React, { ReactNode, createContext, useContext, useState } from "react";
 import { DraggableLocation, DropResult } from "react-beautiful-dnd";
 
 import { useAppDispatch } from "@/hooks";
-import { moveColumn, moveToSameColumn, updateTaskStatus } from "@/store";
+import { moveToSameColumn, updateColumnOrder, updateTaskStatus } from "@/store";
 
 type DragDropProps = (
   source: DraggableLocation,
@@ -128,7 +128,7 @@ const DragDropProvider: React.FC<{
   const handleColumnMove: DragDropProps = (source, destination) =>
     // rememeber that source and dest are just { draggableId, index }
     // moving columns (:
-    dispatch(moveColumn({ source, destination }));
+    dispatch(updateColumnOrder({ source, destination }));
 
   const handleDropshadowRow: RowDropshadowProps = (
     event,

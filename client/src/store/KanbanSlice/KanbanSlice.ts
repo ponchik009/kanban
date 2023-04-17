@@ -7,9 +7,15 @@ import {
 import { DraggableLocation } from "react-beautiful-dnd";
 
 import type { AppState } from "@/store";
-import { KanbanWithColumnsType, LoadingType, UpdateTaskDto } from "@/types";
+import {
+  KanbanWithColumnsType,
+  LoadingType,
+  UpdateColumnDto,
+  UpdateTaskDto,
+} from "@/types";
 import { KanbanApi } from "@/api";
 import { TaskApi } from "@/api/taskApi";
+import { KanbanColumnApi } from "@/api/kanbanKolumnApi";
 
 export interface KanbanState {
   kanban: KanbanWithColumnsType | null;
@@ -25,6 +31,28 @@ export const fetchKanban = createAsyncThunk(
   "Kanban/fetchKanban",
   async (id: string) => {
     return KanbanApi.getKanbanBoard(id);
+  }
+);
+
+export const updateColumnOrder = createAsyncThunk(
+  "Kanban/updateColumnOrder",
+  async (
+    data: {
+      source: DraggableLocation;
+      destination: DraggableLocation;
+    },
+    { getState }
+  ) => {
+    const state = (getState() as AppState).Kanban;
+    const { source, destination } = data;
+
+    const kanban = state.kanban!;
+
+    const [sourceColumn] = kanban.columns.filter((_, i) => i === source.index);
+
+    return KanbanColumnApi.updateColumn(sourceColumn.id, {
+      order: destination.index + 1,
+    });
   }
 );
 
@@ -137,6 +165,13 @@ export const kanbanSlice = createSlice({
 
         // insert the source item at the new colIndex
         destinationColumn.tasks.splice(destination.index, 0, action.payload);
+      })
+      .addCase(updateColumnOrder.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateColumnOrder.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.kanban!.columns = action.payload;
       });
   },
 });
